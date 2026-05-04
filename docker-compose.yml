@@ -36,14 +36,13 @@ services:
         condition: service_healthy
 
   nginx:
-    image: nginx:1.25-alpine
+    image: ./nginx
     container_name: nginx_proxy
     restart: unless-stopped
     ports:
       - "80:80"
     volumes:
       - wordpress_data:/var/www/html:ro
-      - ./nginx/conf.d:/etc/nginx/conf.d:ro
     networks:
       - frontend
     depends_on:
