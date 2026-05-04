@@ -21,10 +21,10 @@ services:
     container_name: wordpress_app
     restart: unless-stopped
     env_file: .env
-    envirnonment:
+    environment:
       WORDPRESS_DB_HOST: mysql:3306
       WORDPRESS_DB_USER: ${MYSQL_USER}
-      WORDPRESS_DB_PASSOWORD: ${MYSQL_USER_PASSWORD}
+      WORDPRESS_DB_PASSWORD: ${MYSQL_USER_PASSWORD}
       WORDPRESS_DB_NAME: ${MYSQL_DATABASE}
     networks:
       - backend
