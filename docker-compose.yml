@@ -3,55 +3,56 @@ services:
     image: mysql:8
     container_name: mysql_db
     restart: unless-stopped
-    env_file:
-    - .env
-    networks:
-      - backend
     volumes:
       - mysql_data:/var/lib/mysql
+    env_file:
+      - .env
+    networks:
+      - backend
     healthcheck:
       test: ["CMD-SHELL","mysqladmin ping -h localhost -u root -p$MYSQL_ROOT_PASSWORD"]
-      interval: 10s
       timeout: 5s
-      retries: 10
+      interval: 3s
+      retries: 5
       start_period: 20s
 
   wordpress:
     image: wordpress:6.5-php8.2-fpm
     container_name: wordpress_app2
     restart: unless-stopped
-    env_file: .env
+    env_file:
+      - .env
     environment:
       WORDPRESS_DB_HOST: mysql:3306
       WORDPRESS_DB_USER: ${MYSQL_USER}
       WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD}
       WORDPRESS_DB_NAME: ${MYSQL_DATABASE}
-    networks:
-      - backend
-      - frontend
     volumes:
       - wordpress_data:/var/www/html
     depends_on:
       mysql:
         condition: service_healthy
+    networks:
+      - backend
+      - frontend
 
   nginx:
     build: ./nginx
-    container_name: nginx_proxy
+    container_name: nginx-proxy
     restart: unless-stopped
     ports:
       - "80:80"
     volumes:
       - wordpress_data:/var/www/html:ro
-    networks:
-      - frontend
     depends_on:
       - wordpress
-
+    networks:
+      - frontend
 networks:
   backend:
     internal: true
-  frontend:
+  frontend: 
 volumes:
   mysql_data:
   wordpress_data:
+    
